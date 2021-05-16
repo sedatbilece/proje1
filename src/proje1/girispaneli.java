@@ -110,7 +110,11 @@ public class girispaneli extends javax.swing.JFrame{
         String bildirim;
         String ad=sekreteralani.getText();
         String sifre= passwordalani.getText();
-        boolean kontrol=false;
+        
+        boolean kontrol=false;// giriş kontrolü iptal etmek için true ya çevir
+        
+        
+        
          try{
         String host="jdbc:derby://localhost:1527/Veriy";//veritabanına bağlantı
         String name="sedat";
