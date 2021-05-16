@@ -108,11 +108,58 @@ public class girispaneli extends javax.swing.JFrame{
     private void girisbutonuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_girisbutonuActionPerformed
         // TODO add your handling code here:
         String bildirim;
-        String kullanıcıA =sekreteralani.getText();
-        bildirim="GİRİŞ BAŞARILI";
-            ögrencikayit b=new ögrencikayit();
+        String ad=sekreteralani.getText();
+        String sifre= passwordalani.getText();
+        boolean kontrol=false;
+         try{
+        String host="jdbc:derby://localhost:1527/Veriy";//veritabanına bağlantı
+        String name="sedat";
+        String pass="123456";
+        Connection con = DriverManager.getConnection(host, name, pass);
+        Statement stmt = con.createStatement();
+        String SQL = "SELECT * FROM UNTITLED";
+
+        ResultSet rs = stmt.executeQuery( SQL );
+        
+        while(rs.next()){
+        
+         String adx=rs.getString("AD");
+            String sifrex =rs.getString("SIFRE");
+              
+         ad=ad.replace(" ","");
+         sifre=sifre.replace(" ","");
+         adx=adx.replace(" ","");
+         sifrex=sifrex.replace(" ","");
+          
+         if(sifrex.equals(sifre) && adx.equals(ad)){
+             kontrol=true;
+         }
+          System.out.println(adx+" "+sifrex);
+        
+        }
+        
+         }
+         catch(SQLException err){
+                        System.out.println(err.getMessage());
+        }
+        
+        
+        if(kontrol){
+            bildirim="GİRİŞ BAŞARILI.......";
+            JOptionPane.showMessageDialog(this, bildirim);
+            
+             ögrencikayit b=new ögrencikayit();
             setVisible(false);
             b.setVisible(true);
+            
+        }
+        else{
+            bildirim="SIFRE HATALI ! Tekrar Deneyiniz";
+            JOptionPane.showMessageDialog(this, bildirim);
+        }
+        
+       
+           
         
        // silme 1.txt
     }//GEN-LAST:event_girisbutonuActionPerformed
