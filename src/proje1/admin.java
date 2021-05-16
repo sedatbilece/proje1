@@ -10,5 +10,5 @@ package proje1;
  * @author USER
  */
 public class admin {
-    
+  
 }

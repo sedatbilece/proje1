@@ -114,30 +114,11 @@ public class girispaneli extends javax.swing.JFrame{
             setVisible(false);
             b.setVisible(true);
         
-        /*else if(!kullanıcıA.equals("Emrullah Erdem") && sekreter1.getSifre().equals("parola")){
-            bildirim="GİRİŞ BAŞARISIZ\n Kullanıcı Adı Hatalı";
-        }
-        
-        else if(!kullanıcıA.equals("Emrullah Erdem") && sekreter1.getSifre().equals("parola")){
-            bildirim="GİRİŞ BAŞARISIZ\n Parola Hatalı";
-        }
-        
-        else{
-            bildirim="Kulanıcı adi ve parola hatalı";
-        }
-        
-        if(bildirim.equals("GİRİŞ BAŞARILI")){
-            JOptionPane.showMessageDialog(this,bildirim);
-        }
-        else{
-            JOptionPane.showMessageDialog(this, bildirim);
-            sekreteralani.setText("");
-            passwordalani.setText("");
-        }*/
+       // silme 1.txt
     }//GEN-LAST:event_girisbutonuActionPerformed
 
     private void sekreteralaniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sekreteralaniActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_sekreteralaniActionPerformed
 
     /**

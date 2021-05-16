@@ -1,16 +1,18 @@
 package proje1;
 
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 
 /*
@@ -25,11 +27,11 @@ import java.io.IOException;
  */
 public class ögrencikayit extends javax.swing.JFrame {
 
-    /**
-     * Creates new form KursOnKayit
-     */
+     Queue sira;
     public ögrencikayit() {
         initComponents();
+        
+       sira=new Queue();
     }
 
     /**
@@ -46,16 +48,15 @@ public class ögrencikayit extends javax.swing.JFrame {
         soyadkısmı = new javax.swing.JLabel();
         bölümkısmı = new javax.swing.JLabel();
         fakultekısmı = new javax.swing.JLabel();
-        bolumadi = new javax.swing.JComboBox<>();
-        ad = new javax.swing.JTextField();
-        soyad = new javax.swing.JTextField();
-        bölüm = new javax.swing.JTextField();
-        fakulte = new javax.swing.JTextField();
+        bolumadi = new javax.swing.JComboBox<String>();
+        adsoyad = new javax.swing.JTextField();
+        tc = new javax.swing.JTextField();
+        yas = new javax.swing.JTextField();
+        sikayet = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         yazdirmabutonu = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -76,7 +77,7 @@ public class ögrencikayit extends javax.swing.JFrame {
         fakultekısmı.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         fakultekısmı.setText("Şikayet");
 
-        bolumadi.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Dahiliye", "FTR", "KBB" }));
+        bolumadi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Dahiliye", "FTR", "KBB" }));
         bolumadi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bolumadiActionPerformed(evt);
@@ -88,7 +89,7 @@ public class ögrencikayit extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Sınıf ", "Ad", "Soyad", "Bölüm", "Fakülte"
+                "Bölüm", "Ad Soyad", "TC", "Yaş", "Şikayet"
             }
         ));
         table.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -98,24 +99,17 @@ public class ögrencikayit extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(table);
 
-        jButton1.setText("Kaydet");
+        jButton1.setText("Hastayı Sıraya ekle");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Kayıt Sil");
+        jButton2.setText("Hasta işlemini tamamla");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("Kayıt Güncelle");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
             }
         });
 
@@ -133,10 +127,8 @@ public class ögrencikayit extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(adkısmı)
@@ -144,112 +136,122 @@ public class ögrencikayit extends javax.swing.JFrame {
                             .addComponent(bölümkısmı)
                             .addComponent(fakultekısmı))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(bolumadi, 0, 147, Short.MAX_VALUE)
-                            .addComponent(ad)
-                            .addComponent(soyad)
-                            .addComponent(bölüm)
-                            .addComponent(fakulte))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(yazdirmabutonu))
-                        .addGap(15, 15, 15))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(bolumadi, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(134, 134, 134))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(sikayet, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(yas, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(tc))
+                                        .addGap(80, 80, 80)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(yazdirmabutonu)))
+                            .addComponent(adsoyad, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 132, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(bolumadi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(adkısmı)
-                            .addComponent(ad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(soyadkısmı)
-                            .addComponent(soyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bölümkısmı)
-                            .addComponent(bölüm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(fakultekısmı)
-                            .addComponent(fakulte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(yazdirmabutonu, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(99, 99, 99))
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(bolumadi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(adkısmı)
+                    .addComponent(adsoyad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(soyadkısmı)
+                    .addComponent(tc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bölümkısmı)
+                    .addComponent(yas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fakultekısmı)
+                    .addComponent(sikayet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(yazdirmabutonu))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //hasta ekle bölümü
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String bildirim;
         DefaultTableModel model=(DefaultTableModel) table.getModel();
-        baglan();
-            if((ad.getText().trim().equals(""))){
+      //  baglan();
+            if((adsoyad.getText().trim().equals(""))){
                 bildirim="Ad boş bırakılamaz!";
                     JOptionPane.showMessageDialog(this, bildirim);//uyarı mesajı göndermek için kullanırız
             }
-            else if(soyad.getText().trim().equals("")){ 
+            else if(tc.getText().trim().equals("")){ 
                 bildirim="Soyad boş bırakılamaz!";
                   JOptionPane.showMessageDialog(this, bildirim);
                 
             }
-            else if(bölüm.getText().trim().equals("")){
+            else if(yas.getText().trim().equals("")){
                 bildirim="bölüm boş bırakılamaz!";
                   JOptionPane.showMessageDialog(this, bildirim);
             }
-            else if(fakulte.getText().trim().equals("")){
+            else if(sikayet.getText().trim().equals("")){
                 bildirim="fakulte boş bırakılamaz!";
                   JOptionPane.showMessageDialog(this, bildirim);
             }
             else {
-Object [] dizi={bolumadi.getSelectedItem().toString(),ad.getText(),soyad.getText(),bölüm.getText(),fakulte.getText()};
+                
+                
+              
+Object [] dizi={bolumadi.getSelectedItem().toString(),adsoyad.getText(),tc.getText(),yas.getText(),sikayet.getText()};
     model.addRow(dizi);
-    System.out.println("MAHALELEE");
-    ekle(ad.getText(),soyad.getText(),bölüm.getText(),fakulte.getText());
+    
+    System.out.println("\n ******** \n");
+   sira.EnQueue(bolumadi.getSelectedItem().toString(),adsoyad.getText(),tc.getText(),yas.getText(),sikayet.getText());
+   
+    sira.Show();// kod kontrol için
+    
+    
+    yazdir(bolumadi.getSelectedItem().toString(),adsoyad.getText(),tc.getText(),yas.getText(),sikayet.getText());
+    
+     //ekle(adsoyad.getText(),tc.getText(),yas.getText(),sikayet.getText()); // bune anlamadım ????
             }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    
+    // sıradaki hasta butonu  
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
     String bildirim;
     DefaultTableModel model=(DefaultTableModel)table.getModel();
         int satir=table.getSelectedRow();
             if(satir==-1){
                 if(table.getRowCount()==0){
-                    bildirim="Tablo'da ögrenci bulunmuyor.";
+                    bildirim="Sırada Hasta bulunmuyor.";
                     JOptionPane.showMessageDialog(this, bildirim);
                 }
-                else {
-                    bildirim="Lütfen silmek istediğiniz satırı seçin";
-                    JOptionPane.showMessageDialog(this, bildirim);
-                }
+               
             }
+            sira.DeQueue();
             model.removeRow(satir);
                    bildirim="Seçili ögrencinin  kaydı başarıyla silindi.";
                    JOptionPane.showMessageDialog(this, bildirim);
-                   ad.setText("");
-                   soyad.setText("");
-                   bölüm.setText("");
-                   fakulte.setText("");
+                   adsoyad.setText("");
+                   tc.setText("");
+                   yas.setText("");
+                   sikayet.setText("");
                    
                    
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -258,38 +260,11 @@ Object [] dizi={bolumadi.getSelectedItem().toString(),ad.getText(),soyad.getText
        DefaultTableModel model=(DefaultTableModel)table.getModel();
          int satir=table.getSelectedRow();
             bolumadi.setSelectedItem(model.getValueAt(satir, 0).toString());
-            ad.setText(model.getValueAt(satir, 1).toString());
-            soyad.setText(model.getValueAt(satir, 2).toString());
-            bölüm.setText(model.getValueAt(satir, 3).toString());
-            fakulte.setText(model.getValueAt(satir, 4).toString());
+            adsoyad.setText(model.getValueAt(satir, 1).toString());
+            tc.setText(model.getValueAt(satir, 2).toString());
+            yas.setText(model.getValueAt(satir, 3).toString());
+            sikayet.setText(model.getValueAt(satir, 4).toString());
     }//GEN-LAST:event_tableMouseClicked
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       String bildirim;
-       DefaultTableModel model=(DefaultTableModel)table.getModel();
-        int satir=table.getSelectedRow();
-            if(satir==-1){
-                if(table.getRowCount()==0){
-                bildirim="Tablo'da ögrenci bulunmuyor.";
-                JOptionPane.showMessageDialog(this, bildirim);
-                }
-                else {
-                bildirim="Lütfen güncelleme yapmak istediğiniz satırı seçiniz";
-                JOptionPane.showMessageDialog(this, bildirim);
-            }
-           
-            }
-            else {
-                model.setValueAt(ad.getText(), satir, 1);
-                model.setValueAt(soyad.getText(), satir, 2);
-                model.setValueAt(bölüm.getText(), satir, 3);
-                model.setValueAt(fakulte.getText(), satir, 4);
-                model.setValueAt(bolumadi.getSelectedItem().toString(), satir, 0);
-                    bildirim="ögrenci kaydı başarıyla güncellendi.";
-                    JOptionPane.showMessageDialog(this, bildirim);
-                    
-                    }
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void bolumadiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bolumadiActionPerformed
         // TODO add your handling code here:
@@ -297,45 +272,13 @@ Object [] dizi={bolumadi.getSelectedItem().toString(),ad.getText(),soyad.getText
 
     private void yazdirmabutonuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yazdirmabutonuActionPerformed
         // TODO add your handling code here:
-        String bildirim;
-        yazdir(ad.getText(),soyad.getText(),bölüm.getText(),fakulte.getText());
-        bildirim="dosya kayit.txt text dosyasina kaydedildi.";
-                    JOptionPane.showMessageDialog(this, bildirim);
+       //silme 5
         
     }//GEN-LAST:event_yazdirmabutonuActionPerformed
 
-    static ResultSet myRs;
-    static Connection myConn;
-    static Statement myStat;
-    public static void baglan(){
-        try
-        {
-            Connection veri = DriverManager.getConnection("jdbc:derby://localhost:1527/odevnyp","root","1234" );
-            Statement stat=veri.createStatement();
-            
-
-
-        }
-        catch (SQLException ex) {
-          JOptionPane.showMessageDialog(null, "Hata: " + ex.toString());
-        }
-
-    }
+    //silme 4
    
-    public static void ekle(String ad,String soyad,String bolum,String fakulte){
-        String sorgu="INSERT INTO odevnyp(adi,soyadi,bolumu,fakultesi) VALUES('"+ad+"','"+soyad+"','"+bolum+"','+"+fakulte+"')";
-        try {
-            Connection veri = DriverManager.getConnection("jdbc:derby://localhost:1527/odevnyp","root","1234" );
-            Statement stat=veri.createStatement();
-            stat.executeUpdate(sorgu);
-            veri.close();
-            JOptionPane.showMessageDialog(null,"başarılı");
-            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Hata: " + ex.toString());
-        }
-        
-    }
+   //silme 3
     /**
      * @param args the command line arguments
      */
@@ -373,12 +316,17 @@ Object [] dizi={bolumadi.getSelectedItem().toString(),ad.getText(),soyad.getText
         });
     }
     
-    public static void yazdir(String ad,String soyad,String bolum,String fakulte){
-        File f=new File("kayit.text");
-        String kayit =ad+soyad+bolum+fakulte;
+    public static void yazdir(String bölumadi,String adsoyad,String tc,String yas,String sikayet){
+        
+        Date now = new Date();
+        
+        
+        File f=new File("kayit.txt");
+        String kayit =now.toString()+" || "+bölumadi+" "+adsoyad+" "+ tc  +" "+ yas  +" "+sikayet;
         try {
             FileWriter fileWriter=new FileWriter(f,true);
             fileWriter.write(kayit);
+            fileWriter.write("\n");
             fileWriter.close();
             
         }
@@ -389,21 +337,20 @@ Object [] dizi={bolumadi.getSelectedItem().toString(),ad.getText(),soyad.getText
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField ad;
     private javax.swing.JLabel adkısmı;
+    private javax.swing.JTextField adsoyad;
     private javax.swing.JComboBox<String> bolumadi;
-    private javax.swing.JTextField bölüm;
     private javax.swing.JLabel bölümkısmı;
-    private javax.swing.JTextField fakulte;
     private javax.swing.JLabel fakultekısmı;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField soyad;
+    private javax.swing.JTextField sikayet;
     private javax.swing.JLabel soyadkısmı;
     private javax.swing.JTable table;
+    private javax.swing.JTextField tc;
+    private javax.swing.JTextField yas;
     private javax.swing.JButton yazdirmabutonu;
     // End of variables declaration//GEN-END:variables
 }
